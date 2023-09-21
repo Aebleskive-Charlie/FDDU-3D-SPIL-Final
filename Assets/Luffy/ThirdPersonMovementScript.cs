@@ -22,12 +22,18 @@ public class ThirdPersonMovement : MonoBehaviour
     Vector3 velocity;
     bool isGrounded;
 
+    UnityEngine.AI.NavMeshAgent _agent;
+    Animator _animator;
+
 
 
 
     void Start()
     {
     Cursor.lockState = CursorLockMode.Locked;
+
+    _animator = GetComponentInChildren<Animator>();
+    _agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
     }
 
 
@@ -35,6 +41,9 @@ public class ThirdPersonMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        float speedPercent = _agent.velocity.magnitude / _agent.speed;
+        _animator.SetFloat("speed", speedPercent);
+        
         // Gravity https://www.youtube.com/watch?v=_QajrabyTJc&list=WL&index=4&t=53s
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
