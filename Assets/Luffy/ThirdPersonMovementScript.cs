@@ -22,8 +22,7 @@ public class ThirdPersonMovement : MonoBehaviour
     Vector3 velocity;
     bool isGrounded;
 
-    UnityEngine.AI.NavMeshAgent _agent;
-    Animator _animator;
+    Animator animator;
 
 
 
@@ -32,8 +31,7 @@ public class ThirdPersonMovement : MonoBehaviour
     {
     Cursor.lockState = CursorLockMode.Locked;
 
-    _animator = GetComponentInChildren<Animator>();
-    _agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+    animator = GetComponent<Animator>();
     }
 
 
@@ -41,9 +39,6 @@ public class ThirdPersonMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float speedPercent = _agent.velocity.magnitude / _agent.speed;
-        _animator.SetFloat("speed", speedPercent);
-        
         // Gravity https://www.youtube.com/watch?v=_QajrabyTJc&list=WL&index=4&t=53s
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
@@ -66,6 +61,17 @@ public class ThirdPersonMovement : MonoBehaviour
 
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
             controller.Move(moveDir.normalized * speed * Time.deltaTime);
+
+             // Update the "Speed" parameter in the Animator based on character speed
+            animator.SetFloat("Speed", speed * direction.magnitude);
+            animator.SetBool("IsIdle", false); // Character is not idle
+            // ... (existing movement code)
+        }
+        else
+        {
+            // If not moving, set the "Speed" parameter to 0 and indicate idle
+            animator.SetFloat("Speed", 0f);
+            animator.SetBool("IsIdle", true); // Character is idle
         }
 
         // Jump https://www.youtube.com/watch?v=_QajrabyTJc&list=WL&index=4&t=53s
